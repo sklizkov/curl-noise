@@ -4,6 +4,7 @@ attribute vec3 aTexCoord;
 
 uniform sampler2D texturePosition;
 uniform sampler2D textureVelocity;
+uniform float uTime;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -30,7 +31,7 @@ void main() {
   mat3 look = lookatMat(positionBuffer.rgb, velocityBuffer.rgb, vec3(0.0, 1.0, 0.0));
   float life = parabola(velocityBuffer.w, 1.);
 
-  vec3 newPosition = positionBuffer.rgb * 5. + look * position * life;
+  vec3 newPosition = positionBuffer.rgb * 6. + look * position * life * min(uTime * .2, 1.1);
 
   vUv = uv;
   vLife = life;

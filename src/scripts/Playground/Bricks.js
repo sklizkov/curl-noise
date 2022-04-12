@@ -23,7 +23,7 @@ export default class Bricks extends PlaygroundObject {
     const dtPosition = this.gpuCompute.createTexture()
     const dtVelocity = this.gpuCompute.createTexture()
 
-    for (let i = 0, l = dtVelocity.image.data.length; i < l; i += 4) {
+    for (let i = 0, l = Math.pow(this.props.width , 2) * 4; i < l; i += 4) {
       const x = Math.random() * 2 - 1
       const y = Math.random() * 2 - 1
       const z = Math.random() * 2 - 1
@@ -58,7 +58,10 @@ export default class Bricks extends PlaygroundObject {
     if (error !== null) throw new Error(error)
 
     // Geometry
-    this.geometry = new THREE.BoxGeometry(1, .5, 6)
+    const brickGeometry = new THREE.BoxBufferGeometry(1, .5, 6)
+
+    this.geometry = new THREE.InstancedBufferGeometry().copy(brickGeometry)
+    this.geometry.instanceCount = Math.pow(this.props.width , 2)
 
     // Attributes
     const aTexCoord = new THREE.InstancedBufferAttribute(new Float32Array(Math.pow(this.props.width, 2) * 3), 3)
@@ -83,18 +86,18 @@ export default class Bricks extends PlaygroundObject {
         uColorA: { value: new THREE.Color(1., .6, .25) },
         uColorB: { value: new THREE.Color(1, 1, 1) },
         uRatio: { value: .96 },
-        fogColor: { type: "c", value: this.props.scene.fog.color },
-        fogNear: { type: "f", value: this.props.scene.fog.near },
-        fogFar: { type: "f", value: this.props.scene.fog.far },
+        fogColor: { value: this.props.scene.fog.color },
+        fogNear: { value: this.props.scene.fog.near },
+        fogFar: { value: this.props.scene.fog.far },
+        uTime: { value: 0 },
       },
       vertexShader,
       fragmentShader,
-      transparent: true,
       fog: true,
     })
 
     // Mesh
-    this.mesh = new THREE.InstancedMesh(this.geometry, this.material, Math.pow(this.props.width, 2))
+    this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.scale.set(.1, .1, .1)
 
     this.add(this.mesh)
@@ -119,6 +122,9 @@ export default class Bricks extends PlaygroundObject {
     this.material.uniforms.textureVelocity.value = this.gpuCompute.getCurrentRenderTarget(this.velocityVariable).texture
 
     this.velocityVariable.material.uniforms.uTime.value += deltaTime * .001
+
+
+    this.material.uniforms.uTime.value += deltaTime * .001
   }
 
 }

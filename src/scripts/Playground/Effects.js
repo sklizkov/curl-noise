@@ -9,8 +9,8 @@ import { PlaygroundExtension } from 'Scripts/Core'
 import bloomVertexShader from 'Shaders/Effects/Bloom/vertex.glsl'
 import bloomFragmentShader from 'Shaders/Effects/Bloom/fragment.glsl'
 
-import blurVertexShader from 'Shaders/Effects/Blur/vertex.glsl'
-import blurFragmentShader from 'Shaders/Effects/Blur/fragment.glsl'
+// import blurVertexShader from 'Shaders/Effects/Blur/vertex.glsl'
+// import blurFragmentShader from 'Shaders/Effects/Blur/fragment.glsl'
 
 import vignetteVertexShader from 'Shaders/Effects/Vignette/vertex.glsl'
 import vignetteFragmentShader from 'Shaders/Effects/Vignette/fragment.glsl'
@@ -36,7 +36,7 @@ export default class Effects extends PlaygroundExtension {
     this.bloomComposer.addPass(this.props.renderPass)
 
     const unrealBloomPass = new UnrealBloomPass()
-    unrealBloomPass.strength = 1.5
+    unrealBloomPass.strength = 1
     unrealBloomPass.radius = 0.25
     unrealBloomPass.threshold = 0.6
     this.bloomComposer.addPass(unrealBloomPass)
@@ -67,23 +67,23 @@ export default class Effects extends PlaygroundExtension {
       folder.add(this.shaderBloomPass.uniforms.uIntensity, 'value', 0, 1, .1).name('Intensity')
     }
 
-    // Blur
-    this.blurPass = new ShaderPass({
-      uniforms: {
-        tDiffuse: {  value: null },
-        uResolution: { value: new THREE.Vector2(width, height) },
-        uStrength: { value: 1. },
-      },
-      vertexShader: blurVertexShader,
-      fragmentShader: blurFragmentShader,
-    })
-    this.effectComposer.addPass(this.blurPass)
+    // // Blur
+    // this.blurPass = new ShaderPass({
+    //   uniforms: {
+    //     tDiffuse: {  value: null },
+    //     uResolution: { value: new THREE.Vector2(width, height) },
+    //     uStrength: { value: 1. },
+    //   },
+    //   vertexShader: blurVertexShader,
+    //   fragmentShader: blurFragmentShader,
+    // })
+    // this.effectComposer.addPass(this.blurPass)
 
-    if (this.gui) {
-      const folder = this.gui.addFolder('Blur')
+    // if (this.gui) {
+    //   const folder = this.gui.addFolder('Blur')
 
-      folder.add(this.blurPass.uniforms.uStrength, 'value', 0, 1, .01).name('Strength')
-    }
+    //   folder.add(this.blurPass.uniforms.uStrength, 'value', 0, 1, .01).name('Strength')
+    // }
 
     // Vignette
     const vignetteOptions = {
@@ -129,7 +129,7 @@ export default class Effects extends PlaygroundExtension {
     this.bloomComposer.setSize(width, height)
     this.bloomComposer.setPixelRatio(pixelRatio)
 
-    this.blurPass.uniforms.uResolution.value = new THREE.Vector2(width, height)
+    // this.blurPass.uniforms.uResolution.value = new THREE.Vector2(width, height)
   }
 
   tick({ timestamp, deltaTime, elapsedTime, frameCount }) {

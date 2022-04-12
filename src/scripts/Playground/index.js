@@ -86,7 +86,7 @@ export default class Playground extends PlaygroundWorld {
     this.add(Bricks, {
       renderer: this.renderer,
       scene: this.scene,
-      width: 128,
+      width: 96,
     })
   }
 
